@@ -1,19 +1,29 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import avatars from '../../../assets/pfps.json'
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { removeUser } from '../../../store/localUsersSlice';
+import { removeFocus, setFocus } from '../../../store/userCardSlice';
+
+
 
 //last is a bool which says is the item is the last
 function UserStrip({user, last, first}) {
 
     const [isPressed, setIsPressed] = useState(false);
     const [hovered, setHovered] = useState(false);
-    // const localUsers = useSelector( state => state.localUsers );
+    //const focusedUser = useSelector( state => state.focusedUser )
+    // useEffect(()=>{console.log("Focused UID change detected: " + focusedUser)}, [focusedUser])
     const dispatch = useDispatch();
 
-      function localStorageUserItemDelete(uid){
+    function loadUserCard(uid){
+        //console.log(uid)
+        dispatch(setFocus(uid))
+    }
+
+    function localStorageUserItemDelete(uid){
         console.log(uid)
+        dispatch(removeFocus())
         dispatch(removeUser(uid));
     }
 
@@ -27,8 +37,9 @@ function UserStrip({user, last, first}) {
 
     function regionColourPicker(region){
         if(region === "NONE"){
-            return `purple-400`;
-        }
+            return `bg-purple-400`;
+        } 
+        return `bg-amber-400`
     }
 
   return (
@@ -36,6 +47,7 @@ function UserStrip({user, last, first}) {
         first ? '' : 'mt-[3%]'
       } rounded-xl transition 
       ${isPressed ? 'bg-black/50' : 'hover:bg-gray-400/25'}`}
+      onClick={() => loadUserCard(user.uid)}
       onMouseEnter={() => setHovered(true)}
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}
@@ -70,14 +82,16 @@ function UserStrip({user, last, first}) {
                 </div>
             </div>
 
-            <div className={`flex regionarea bg-${regionColourPicker(user.region)} w-[10%] justify-self-end items-center text-center 
-            vertical-text justify-center mr-1.5 mt-1.5 afacad-semi-bold text-[95%] rounded`}>
+            <div className={`flex regionarea ${regionColourPicker(user.region)} w-[10%] justify-self-end items-center text-center 
+            vertical-text justify-center mr-1.5 mt-1.5 afacad-semi-bold text-[95%] rounded`} >
                 {user.region}
             </div>
 
         </div>
         
-        {!last && <div className=' border-b border-[#B2B2B2]/40 rounded-4xl w-full'></div>}
+        {(!last) ?
+         <div className=' border-b border-[#B2B2B2]/40 rounded-4xl w-full'></div> :
+        <div className='w-full py-3'></div>}
     </div>
   )
 }

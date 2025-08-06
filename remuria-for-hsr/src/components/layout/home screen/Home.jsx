@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { GrSearch } from "react-icons/gr";
 import { FaCircleNotch } from "react-icons/fa";
@@ -8,6 +8,8 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import UserStrip from './UserStrip';
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrReplaceUser } from '../../../store/localUsersSlice';
+import UserCard from './UserCard';
+import { setFocus } from '../../../store/userCardSlice';
 
 function Home() {
 
@@ -17,7 +19,17 @@ function Home() {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const localUsers = useSelector( state => state.localUsers )
+  const focusedUser = useSelector( state => state.focusedUser )
   const dispatch = useDispatch();
+
+  const testRef = useRef(null);
+  const [requiredWidth, setRequiredWidth] = useState(0);
+
+  useLayoutEffect(()=>{
+    if(testRef.current) {
+      setRequiredWidth(testRef.current.offsetWidth);
+    }
+  }, [])
 
   function submitHandler(obj){
     const uid = obj.uid;
@@ -35,11 +47,14 @@ function Home() {
           nickname: res.data.nickname,
           signature: res.data.signature,
           region: res.data.region,
-          headIcon: res.data.headIcon
+          headIcon: res.data.headIcon,
+          level: res.data.level,
+          achievementCount: res.data.achievementCount
         }
         setCardState(1);
 
         dispatch(addOrReplaceUser(userObjForLocalStorage))
+        dispatch(setFocus(uid))
 
         setResponseWait(false);
       })
@@ -114,7 +129,8 @@ function Home() {
 
       </div>
 
-      <div className="flex items-center justify-center mx-5">
+      {(focusedUser === "") ? 
+      <div className="flex items-center justify-center mx-5" ref={testRef}>
         <div className="items-center flex flex-col ">
             <p className="afacad-bold text-9xl text-white truncate">
               Welcome to
@@ -123,7 +139,18 @@ function Home() {
               Re<span className='text-purple-800'>:</span>muria
             </p>
           </div>
-      </div>
+      </div>:
+      <>
+      {(cardState !== -1) ? 
+        <div className="flex items-center justify-center mx-5 h-full" style={{ width: requiredWidth, maxWidth: requiredWidth }}>
+          <UserCard uid={focusedUser} cardState={cardState} />
+        </div>:
+        <div className="flex items-center justify-center mx-5 h-full" style={{ width: requiredWidth, maxWidth: requiredWidth }}>
+          ??? replace this with error usercard
+        </div>
+      }
+      </>
+      }
 
     </div>
   )
