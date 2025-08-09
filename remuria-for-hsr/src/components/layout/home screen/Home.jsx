@@ -147,7 +147,13 @@ function Home() {
         >
           <div className="flex flex-col h-full ">
             {[...localUsers].reverse().map((user, index, arr) => (
-              <UserStrip key={user.uid} user={user} last={(arr.length - index) === 1 ? true : false} first={(index) === 0 ? true : false}/>
+              <div className="w-full " key={user.uid}>
+                <UserStrip key={user.uid} user={user} last={(arr.length - index) === 1 ? true : false} first={(index) === 0 ? true : false}/>
+
+                {(!((arr.length - index) === 1)) ?
+                <div className=' bg-[#B2B2B2]/40 h-[1px] rounded-4xl w-full'></div> :
+                <div className='w-full py-3'></div>}
+              </div>
               
             ))}
           </div>

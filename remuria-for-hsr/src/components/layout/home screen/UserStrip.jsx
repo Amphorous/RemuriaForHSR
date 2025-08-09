@@ -36,16 +36,19 @@ function UserStrip({user, last, first}) {
     }
 
     function regionColourPicker(region){
-        if(region === "NONE"){
-            return `bg-purple-400`;
-        } 
-        return `bg-amber-400`
+        switch(region){
+            case "MHY": return 'bg-white';
+            case "ASIA": return 'bg-[#FDF628]';
+            case "CN": return 'bg-[#FD4428]';
+            case "NA": return 'bg-[#FDA828]';
+            case "EU": return 'bg-[#285AFD]';
+            case "THM": return 'bg-[#2feb25]';
+        }
+        return `bg-purple-400`
     }
 
   return (
-    <div className={`relative flex flex-col h-full max-h-[15%] justify-between ${
-        first ? '' : 'mt-[3%]'
-      } rounded-xl transition 
+    <div className={`relative flex flex-col justify-between my-1 rounded-xl transition py-2 px-2 
       ${isPressed ? 'bg-black/50' : 'hover:bg-gray-400/25'}`}
       onClick={() => loadUserCard(user.uid)}
       onMouseEnter={() => setHovered(true)}
@@ -67,11 +70,11 @@ function UserStrip({user, last, first}) {
             </div>
         }
 
-        <div className='flex justify-between h-[90%] mb-[3%] ml-[1%] '>
+        <div className='flex justify-between  items-center'>
             
-            <div className="flex namesandpicarea items-center max-w-[90%]">
-                <div className='h-full picarea aspect-square mt-[2.5%] rounded-full'>
-                    <img src={profileImageGetter(user.headIcon)} className='h-full aspect-square bg-black/12 rounded-full ' />
+            <div className="flex namesandpicarea items-center w-[90%] max-w-[90%]">
+                <div className='h-full picarea aspect-square rounded-full items-center'>
+                <img src={profileImageGetter(user.headIcon)} className='aspect-square bg-black/12 rounded-full ' />
                     
                 </div>
                 <div className="flex flex-col pl-3 justify-center w-full">
@@ -82,16 +85,14 @@ function UserStrip({user, last, first}) {
                 </div>
             </div>
 
-            <div className={`flex regionarea ${regionColourPicker(user.region)} w-[10%] justify-self-end items-center text-center 
-            vertical-text justify-center mr-1.5 mt-1.5 afacad-semi-bold text-[95%] rounded`} >
+            <div className={`flex regionarea ${regionColourPicker(user.region)} items-center text-center 
+            vertical-text justify-center px-3 mr-1.5 afacad-semi-bold text-[95%] rounded`} >
                 {user.region}
             </div>
 
         </div>
         
-        {(!last) ?
-         <div className=' border-b border-[#B2B2B2]/40 rounded-4xl w-full'></div> :
-        <div className='w-full py-3'></div>}
+        
     </div>
   )
 }

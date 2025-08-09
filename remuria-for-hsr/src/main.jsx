@@ -6,6 +6,7 @@ import Home from './components/layout/home screen/Home'
 import Empty from './components/Empty'
 import { Provider } from 'react-redux'
 import store from './store/store'
+import Dashboard from './components/layout/user screens/Dashboard'
 
 const browserRouterObject = createBrowserRouter([
   {
@@ -27,6 +28,11 @@ const browserRouterObject = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="home" />
+      },
+      {
+        path: "dashboard/:uid",
+        element: <Dashboard />,
+        handle: { crumb: () => 'Dashboard' }
       }
     ]
   }
