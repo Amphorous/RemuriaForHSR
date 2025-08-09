@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addOrReplaceUser } from '../../../store/localUsersSlice';
 import UserCard from './UserCard';
 import { setFocus } from '../../../store/userCardSlice';
+import FailedUserCard from './FailedUserCard';
 
 function Home() {
 
@@ -24,13 +25,6 @@ function Home() {
 
   const testRef = useRef(null);
   const [requiredWidth, setRequiredWidth] = useState(0);
-
-  // useLayoutEffect(()=>{
-  //   if(testRef.current) {
-  //     let width = testRef.current.offsetWidth;
-  //     setRequiredWidth( width );
-  //   }
-  // }, [])
 
   useEffect(() => {
     const element = testRef.current;
@@ -148,7 +142,7 @@ function Home() {
           <div className="flex flex-col h-full ">
             {[...localUsers].reverse().map((user, index, arr) => (
               <div className="w-full " key={user.uid}>
-                <UserStrip key={user.uid} user={user} last={(arr.length - index) === 1 ? true : false} first={(index) === 0 ? true : false}/>
+                <UserStrip key={user.uid} user={user} setCardState={setCardState}/>
 
                 {(!((arr.length - index) === 1)) ?
                 <div className=' bg-[#B2B2B2]/40 h-[1px] rounded-4xl w-full'></div> :
@@ -186,22 +180,38 @@ function Home() {
         </>
       } */}
 
-      {focusedUser !== "" && requiredWidth > 0 ? (
+      {focusedUser !== "" && localUsers.some(u => u.uid === focusedUser) && requiredWidth > 0 > 0 ? (
         <div className="flex items-center justify-center mx-5 h-full" style={{ width: requiredWidth }}>
-          <UserCard uid={focusedUser} cardState={cardState} />
+
+          <UserCard uid={focusedUser} showButtons={true}/>
+
         </div>
-        ) : (
-          <div className="flex items-center justify-center mx-5" ref={testRef}>
-            <div className="items-center flex flex-col">
-              <p className="afacad-bold text-9xl text-white truncate">
-                Welcome to
-              </p>
-              <p className="afacad-bold text-9xl text-white mt-[-1.5rem]">
-                Re<span className='text-purple-800'>:</span>muria
-              </p>
+        ) : 
+
+          <>
+            {(requiredWidth > 0 && cardState === -1)?
+
+            <div className="flex items-center justify-center mx-5 h-full" style={{ width: requiredWidth }}>
+
+              <FailedUserCard setCardState={setCardState} />
+
             </div>
-          </div>
-        )}
+          
+          :
+            <div className="flex items-center justify-center mx-5" ref={testRef}>
+              <div className="items-center flex flex-col">
+                <p className="afacad-bold text-9xl text-white truncate">
+                  Welcome to
+                </p>
+                <p className="afacad-bold text-9xl text-white mt-[-1.5rem]">
+                  Re<span className='text-purple-800'>:</span>muria
+                </p>
+              </div>
+            </div>
+          }
+          </>
+          
+        }
 
 
     </div>

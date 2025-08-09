@@ -8,7 +8,7 @@ import { removeFocus, setFocus } from '../../../store/userCardSlice';
 
 
 //last is a bool which says is the item is the last
-function UserStrip({user, last, first}) {
+function UserStrip({user, setCardState}) {
 
     const [isPressed, setIsPressed] = useState(false);
     const [hovered, setHovered] = useState(false);
@@ -23,7 +23,8 @@ function UserStrip({user, last, first}) {
 
     function localStorageUserItemDelete(uid){
         console.log(uid)
-        dispatch(removeFocus())
+        //setCardState(0);
+        dispatch(removeFocus());
         dispatch(removeUser(uid));
     }
 
@@ -63,7 +64,7 @@ function UserStrip({user, last, first}) {
         {
             (hovered) && 
             <div className="aspect-square bg-red-600/50 hover:bg-red-600 transition h-[25%] 
-            absolute rounded-full text-white/50 hover:text-white flex items-center justify-center"
+            absolute rounded-full text-white/50 hover:text-white flex items-center justify-center cursor"
                 onClick={()=>{localStorageUserItemDelete(user.uid)}}
             >
                 <MdDelete />
