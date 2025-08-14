@@ -81,6 +81,7 @@ function Home() {
         setResponseWait(false);
       })
       .catch((err) => {
+        //console.log("error caught", err)
         setCardState(-1);
         setCardInfo(undefined);
         setResponseWait(false);

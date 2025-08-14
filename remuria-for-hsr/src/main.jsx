@@ -7,6 +7,9 @@ import Empty from './components/Empty'
 import { Provider } from 'react-redux'
 import store from './store/store'
 import Dashboard from './components/layout/user screens/Dashboard'
+import DashboardsRelics from './components/layout/user screens/dashboard children/DashboardsRelics'
+import DashboardBuilds from './components/layout/user screens/dashboard children/DashboardBuilds'
+import Validate from './components/layout/user screens/dashboard children/Validate'
 
 const browserRouterObject = createBrowserRouter([
   {
@@ -32,7 +35,28 @@ const browserRouterObject = createBrowserRouter([
       {
         path: "dashboard/:uid",
         element: <Dashboard />,
-        handle: { crumb: () => 'Dashboard' }
+        handle: { crumb: () => 'Dashboard' },
+        children: [
+          {
+            path: "relics",
+            element: <DashboardsRelics />,
+            handle: { crumb: () => 'Relics' }
+          },
+          {
+            path: "builds",
+            element: <DashboardBuilds />,
+            handle: { crumb: () => 'Builds' }
+          },
+          {
+            path: "validate",
+            element: <Validate />,
+            handle: { crumb: () => 'User Validation' }
+          },
+          {
+            path: "",
+            element: <Navigate to="relics" />
+          },
+        ]
       }
     ]
   }

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MdArrowBack } from "react-icons/md";
 import { removeFocus, setFocus } from '../../../store/userCardSlice';
 import avatars from '../../../assets/pfps.json';
 import ach from '../../../assets/achievementIcon.webp';
@@ -203,8 +202,10 @@ function UserCard({uid, showButtons}) {
             </div>
         }
 
-        <div className='aspect-[31.5/15] w-full  relative rounded-2xl ' 
-        
+        <motion.div className='aspect-[31.5/15] w-full  relative rounded-2xl ' 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
         >
             {/* https://enka.network/ui/UI_NameCardPic_Shougun_P.png */}
             <img src={alb} className='w-full absolute -z-10 rounded-2xl' />
@@ -381,7 +382,7 @@ function UserCard({uid, showButtons}) {
 
             <div className="absolute bottom-0 left-0 vertical-text barcode-font mb-2 text-white/42">{uid}</div>
 
-        </div>
+        </motion.div>
         
     </div>
   )

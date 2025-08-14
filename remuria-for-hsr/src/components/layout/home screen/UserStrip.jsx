@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { removeUser } from '../../../store/localUsersSlice';
 import { removeFocus, setFocus } from '../../../store/userCardSlice';
-
+import { motion } from 'framer-motion';
 
 
 //last is a bool which says is the item is the last
