@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { removeUser } from '../../../store/localUsersSlice';
 import { removeFocus, setFocus } from '../../../store/userCardSlice';
-
+import { motion } from 'framer-motion';
 
 
 //last is a bool which says is the item is the last
@@ -16,9 +16,9 @@ function UserStrip({user, setCardState}) {
     // useEffect(()=>{console.log("Focused UID change detected: " + focusedUser)}, [focusedUser])
     const dispatch = useDispatch();
 
-    function loadUserCard(uid){
+    function loadUserCard(){
         //console.log(uid)
-        dispatch(setFocus(uid))
+        dispatch(setFocus(user))
     }
 
     function localStorageUserItemDelete(uid){
@@ -51,7 +51,7 @@ function UserStrip({user, setCardState}) {
   return (
     <div className={`relative flex flex-col justify-between my-1 rounded-xl transition py-2 px-2 
       ${isPressed ? 'bg-black/50' : 'hover:bg-gray-400/25'}`}
-      onClick={() => loadUserCard(user.uid)}
+      onClick={() => loadUserCard()}
       onMouseEnter={() => setHovered(true)}
       onMouseDown={() => setIsPressed(true)}
       onMouseUp={() => setIsPressed(false)}

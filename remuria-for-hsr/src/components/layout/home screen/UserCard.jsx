@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { MdArrowBack } from "react-icons/md";
 import { removeFocus, setFocus } from '../../../store/userCardSlice';
 import avatars from '../../../assets/pfps.json';
 import ach from '../../../assets/achievementIcon.webp';
@@ -12,6 +11,7 @@ import { addOrReplaceUser } from '../../../store/localUsersSlice';
 import { useNavigate } from 'react-router';
 import { IoIosArrowForward } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
+import { ImEyeBlocked } from "react-icons/im";
 
 //showButtons is for enable/disabling the close & go to dashboard buttons
 function UserCard({uid, showButtons}) {
@@ -22,8 +22,7 @@ function UserCard({uid, showButtons}) {
 
     //dont forget to add removeFocus
     const localUsers = useSelector( state => state.localUsers );
-    const [focusedUserDetails, setFocusedUserDetails] = useState();
-    const [isBackPressed, setIsBackPressed] = useState(false);
+    const focusedUser = useSelector( state => state.focusedUser );
 
     const [copyStatus, setCopyStatus] = useState("");
 
@@ -47,8 +46,8 @@ function UserCard({uid, showButtons}) {
       }, [hovered]);
 
     useEffect(()=>{
-        setFocusedUserDetails(() => {
             let focusedUserFromLS = localUsers.find( u => u.uid === uid )
+            console.log("focuseduserfromls: ", focusedUserFromLS)
             if(focusedUserFromLS === undefined){
                 axios.get(`http://localhost:8080/user/dashboard/noRefresh/${uid}`)
                         .then((res) => {
@@ -60,7 +59,8 @@ function UserCard({uid, showButtons}) {
                                 region: res.data.region,
                                 headIcon: res.data.headIcon,
                                 level: res.data.level,
-                                achievementCount: res.data.achievementCount
+                                achievementCount: res.data.achievementCount,
+                                buildsPublic: res.data.buildsPublic
                             }
 
                             dispatch(removeFocus())
@@ -69,15 +69,17 @@ function UserCard({uid, showButtons}) {
 
                             setIsRefreshButtonActive(true);
                             focusedUserFromLS = userObjForLocalStorage;
+                            dispatch(setFocus(focusedUserFromLS));
 
                         })
                         .catch((err) => {
-                            console.log(err)
+                            console.log("umm what: ",err)
                             setIsRefreshButtonActive(true);
                         })
+            } else {
+                dispatch(setFocus(focusedUserFromLS));
             }
-            return focusedUserFromLS;
-        })
+            
     }, [localUsers, uid])
 
     useEffect(()=>{
@@ -118,9 +120,9 @@ function UserCard({uid, showButtons}) {
       }, []);
     
 
-    // useEffect(()=>{
-    //     console.log("focused user info loaded: ", focusedUserDetails);
-    // }, [focusedUserDetails])
+    useEffect(()=>{
+        console.log("focused user read in usercard as: ", focusedUser);
+    }, [focusedUser])
 
     function removeFocusOnBackPress(){
         dispatch(removeFocus());
@@ -164,11 +166,12 @@ function UserCard({uid, showButtons}) {
                             region: res.data.region,
                             headIcon: res.data.headIcon,
                             level: res.data.level,
-                            achievementCount: res.data.achievementCount
+                            achievementCount: res.data.achievementCount,
+                            buildsPublic: res.data.buildsPublic
                             }
 
                             dispatch(addOrReplaceUser(userObjForLocalStorage))
-                            dispatch(setFocus(uid))
+                            dispatch(setFocus(userObjForLocalStorage))
 
                             setIsRefreshButtonActive(true);
 
@@ -177,7 +180,9 @@ function UserCard({uid, showButtons}) {
                             console.log(err)
                             setIsRefreshButtonActive(true);
                         })
-                    } 
+                    } else {
+                        console.log("subloading failed in the backend it seems")
+                    }
                 })
                 .catch((err) => {
                     console.log(err)
@@ -191,19 +196,24 @@ function UserCard({uid, showButtons}) {
   return (
     <div className='w-full'>
 
-        <div className="afacad-bold text-8xl text-white text-wrap px-4 py-2 mb-4 rounded-3xl flex items-center">
-            <p className='leading-[85%]'>User Found!</p>
-        </div>
+        {showButtons && 
+            <div className="afacad-bold text-8xl text-white text-wrap px-4 py-2 mb-4 rounded-3xl flex items-center">
+                <p className='leading-[85%]'>User Found!</p>
+            </div>
+        }
 
-        <div className='aspect-[31.5/15] w-full  relative rounded-2xl ' 
-        
+        <motion.div className='aspect-[31.5/15] w-full  relative rounded-2xl ' 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
         >
             {/* https://enka.network/ui/UI_NameCardPic_Shougun_P.png */}
             <img src={alb} className='w-full absolute -z-10 rounded-2xl' />
             <div className="absolute aspect-[31.5/17] w-full bg-gray-800/50 rounded-2xl backdrop-blur-[3px]">
 
-                <div className="absolute text-white px-1 -rotate-90 mt-10 flex libre-baskerville-regular backdrop-blur-xs rounded-4xl z-10">
-                    TL: {focusedUserDetails?.level}
+                <div className="absolute text-white px-0 vertical-lmao left-[3.2%] top-[16.3%] flex
+                 libre-baskerville-regular backdrop-blur-[5px] rounded-4xl z-10">
+                    TL: {String(focusedUser?.level ?? "")}
                 </div>
                 
                 <div className="border-2 border-dashed w-[95%] ml-[5%] rounded-2xl h-full border-white/42 z-0 flex flex-col justify-between relative">
@@ -232,46 +242,47 @@ function UserCard({uid, showButtons}) {
 
                     <div className="cardbody flex flex-col w-full ">
                         <div className="flex nameandpfpbox ml-7 mr-5 mt-5 items-center ">
-                            <img src={profileImageGetter(focusedUserDetails?.headIcon)} className='h-full aspect-square bg-black/12 rounded-full 
+                            <img src={profileImageGetter(focusedUser?.headIcon)} className='h-full aspect-square bg-black/12 rounded-full 
                                 
                             ' />
                             <div className="flex flex-col overflow-hidden text-ellipsis">
                                 <p className="libre-baskerville-bold text-white text-[300%]
-                                ml-4 overflow-hidden text-ellipsis">{focusedUserDetails?.nickname}</p>
+                                ml-4 overflow-hidden text-ellipsis whitespace-nowrap">{focusedUser?.nickname}</p>
                                 <p className="libre-baskerville-regular text-gray-400 text-[80%] -mt-2
-                                ml-4 overflow-hidden text-ellipsis">{focusedUserDetails?.signature}</p>
+                                ml-4 overflow-hidden text-ellipsis whitespace-nowrap">{focusedUser?.signature}</p>
                             </div>
                         </div>
 
                         <div className="flex flex-col ml-10 mt-5">
 
-                            <div className="flex">
-                                <div className={`${regionColourPicker(focusedUserDetails?.region)} afacad-bold text-black px-2 
-                                text-center rounded-sm flex justify-center items-center mr-4`}>
-                                    {focusedUserDetails?.region}
+                            <div className="flex flex-wrap gap-2">
+
+                                <div className={`${regionColourPicker(focusedUser?.region)} afacad-bold text-black px-2 
+                                text-center rounded-sm flex justify-center items-center`}>
+                                    {focusedUser?.region}
                                 </div>
 
-                                <div className="bg-[#93590D] afacad-bold text-white px-2 text-center rounded-sm flex justify-center items-center mr-4">
+                                <div className="bg-[#93590D] afacad-bold text-white px-2 text-center rounded-sm flex justify-center items-center">
                                     <img src={ach} className='w-[24px] h-[24px]' />
-                                    {focusedUserDetails?.achievementCount}
+                                    {focusedUser?.achievementCount}
                                 </div>
 
                                 <div className={`${(copyStatus === "")?'bg-[#93590D]':((copyStatus === "Copied")?'bg-[#89b012]':'bg-[#a1381b]')} 
                                 afacad-bold text-white px-2 text-center rounded-sm flex justify-center 
-                                items-center mr-4 cursor-copy`}
+                                items-center cursor-copy`}
                                     onClick={() => {
                                         navigator.clipboard.writeText(uid)
                                         .then(() => {
                                             setCopyStatus("Copied"); 
                                             setTimeout(() => {
                                                 setCopyStatus(""); 
-                                            }, 3000);
+                                            }, 750);
                                         })
                                         .catch(err => {
                                             setCopyStatus("Failed"); 
                                             setTimeout(() => {
                                                 setCopyStatus(""); 
-                                            }, 3000);
+                                            }, 750);
                                         });
                                     }}
                                 >
@@ -283,6 +294,18 @@ function UserCard({uid, showButtons}) {
                                         <>Copy Failed</>}
                                     </>}
                                 </div>
+
+                                {(!focusedUser?.buildsPublic) && 
+                                
+                                    <div className="bg-[#93310d] afacad-bold text-white px-2 text-center rounded-sm flex gap-1 justify-center items-center">
+                                        <ImEyeBlocked size={18}/>
+                                        Builds Private
+                                    </div>
+
+                                }
+
+                                
+
                             </div>
 
                         </div>
@@ -359,7 +382,7 @@ function UserCard({uid, showButtons}) {
 
             <div className="absolute bottom-0 left-0 vertical-text barcode-font mb-2 text-white/42">{uid}</div>
 
-        </div>
+        </motion.div>
         
     </div>
   )

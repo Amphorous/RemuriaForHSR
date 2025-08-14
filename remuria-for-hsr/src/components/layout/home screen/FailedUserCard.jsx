@@ -27,7 +27,7 @@ function FailedUserCard({setCardState}) {
             <p className='leading-[85%]'>User Not Found!</p>
         </div>
 
-        <div className='aspect-[31.5/15] w-full  relative rounded-2xl bg-[#dbb980]' 
+        <div className='aspect-[31.5/15] w-full  relative rounded-2xl bg-[#605138]' 
         
         >
             
