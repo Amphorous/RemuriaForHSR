@@ -52,15 +52,12 @@ A visually rich and data-driven web application built for **Honkai: Star Rail** 
 - UID-based player search  
 - Dynamic dashboard displaying user stats and relics  
 - Smooth animated UI transitions and card displays  
-- Real-time data fetch from Enka API  
+- Real-time data fetch from Enka API
+- User login and personalized dashboards  
 
 ### 🚧 In Progress
 - Damage calculator (based on character build and relic stats)  
-- User login and personalized dashboards  
 - Relic database browser  
-- Graph-based data visualization using Neo4j  
+- Build rankings 
 
----
-
-## 🧠 Architecture Overview
 
