@@ -24,13 +24,14 @@ function Dashboard() {
   return (
     <div className='flex justify-around bg-ambder-400 w-full'>
 
-      <div className="max- w-[30vw] min-w-[480px] flex items-center">
-        <UserCard uid={uid} showButtons={false} />
+      <div className=" maxs-ws-[480px] min-w-[480px] flex flex-col justify-center ">
+        <p className="afacad-bold xl:text-[700%] leading-[80%] text-white text-[500%] lg:mb-[10%]">User <br/> Dashboard</p>
+        <UserCard uid={uid} showButtons={false}/>
       </div>
 
-      <div className=" w-[60vw] min-w-[480] flex flex-col items-center">
+      <div className=" w-[60vw] min-w-[480] flex flex-col items-center ">
         <PillSlidingSelectBar uid={uid} rightDisplaySelector={rightDisplaySelector} setRightDisplaySelector={setRightDisplaySelector}/>
-        <div className="bg-gray-400 w-full h-full my-5">
+        <div className="bg-gfray-400 w-full h-full mt-5">
           <Outlet />
         </div>
       </div>
