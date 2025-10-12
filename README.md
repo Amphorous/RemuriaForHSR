@@ -15,11 +15,15 @@ A visually rich and data-driven web application built for **Honkai: Star Rail** 
   <br/>
   <sub><b>Homepage & UID Search</b></sub>
 </td>
+</tr>
+<tr>
 <td align="center">
   <img src="./assets/Split2.gif" width="100%" alt="User Found Transition"/>
   <br/>
   <sub><b>User Found & Info Card</b></sub>
 </td>
+</tr>
+<tr>
 <td align="center">
   <img src="./assets/Split3.gif" width="100%" alt="Dashboard View"/>
   <br/>
