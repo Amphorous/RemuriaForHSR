@@ -1,6 +1,6 @@
 # Re:muria — Honkai: Star Rail 
 
-A visually rich and data-driven web application built for **Honkai: Star Rail** players to view detailed user stats, relic builds, rankings and damage calculations — powered by the [Enka.Network API](https://api.enka.network/#/).
+A visually rich and data-driven full-stack web application built for **Honkai: Star Rail** players to view detailed user stats, relic builds, rankings and damage calculations — powered by the [Enka.Network API](https://api.enka.network/#/).
 
 > ⚙️ *Work in Progress — actively being developed with a focus on UI fluidity, efficient data visualization, and Neo4j-powered relationship mapping.*
 
