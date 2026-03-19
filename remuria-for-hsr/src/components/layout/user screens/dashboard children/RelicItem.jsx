@@ -23,19 +23,19 @@ function RelicItem({info}) {
     function rarityColourGetter(){
         if(relicMetaInfo){
             switch(relicMetaInfo[0]){
-                case "6": return `bg-amber-400`;
-                case "5": return "bg-purple-400";
-                case "4": return "bg-blue-400";
-                case "3": return "bg-gray-400";
+                case "6": return `border-amber-400`;
+                case "5": return "border-purple-400";
+                case "4": return "border-blue-400";
+                case "3": return "border-gray-400";
             }
         }
     }
 
   return (
     <>{relicMetaInfo && <>
-        <div className={`rounded-full ${rarityColourGetter()} min-w-[6vw] aspect-[1/3.8] shadow-xl shadow-black/70 relative overflow-hidden bg-gradient-to-b from-black to-transparent`}
+        <div className={`rounded-full bg-gray-400 border-2 ${rarityColourGetter()} min-w-[6vw] aspect-[1/3.8] shadow-xl shadow-black/70 overflow-hidden flex flex-col `}
         onClick={()=>{console.log("relic info:", info.relic.tid)}}>
-            <img src={imageGetter()} alt="" className=" absolute aspect-[1/1] h-[60%] object-cover -translate-y-1/2 top-1/2 object-[35%_center] z-10" />
+            <img src={imageGetter()} alt="" className="  aspect-square h-[20%] bg-amber-400" />
         </div>
     </>}</>
   )
