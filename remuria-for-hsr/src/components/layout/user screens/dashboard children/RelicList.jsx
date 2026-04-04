@@ -124,7 +124,7 @@ function RelicList({ info, relicPageNumber }) {
             if(statType.toLowerCase().includes("ratio") || statType.toLowerCase().includes("chance") ||
              statType.toLowerCase().includes("resistance") || statType.toLowerCase().includes("probability") ||
              statType.toLowerCase().includes("criticaldamage")){
-                console.log(statType)
+                // console.log(statType)
                 return (<div className='text-white afacad-semi-bold text-sm text-center'>+{(statValue*100).toFixed(2)}%</div>);
             } else {
                 return (<div className='text-white afacad-semi-bold text-sm text-center'>+{statValue.toFixed(2)}</div>);
@@ -153,9 +153,9 @@ function RelicList({ info, relicPageNumber }) {
         </thead>
         <tbody>
           {info && info.map((record, index) => {
-            if (record === "lastItem" || record === "error") return null;
+            if (!record || record === "lastItem" || record === "error" || !record.relic) return null;
             const relic = record.relic;
-            const metaArray = metaArrayGetter(relic.tid);
+            const metaArray = relic.tid ? metaArrayGetter(relic.tid) : [];
             return (
               <tr key={index} className={`border-b border-gray-700 ${rarityColourGetter(metaArray)}`}>
                 <td className='px-4 py-1.5'>

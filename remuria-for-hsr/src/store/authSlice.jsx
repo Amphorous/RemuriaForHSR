@@ -4,7 +4,7 @@ import axios from "axios";
 // Thunk to check auth status
 export const checkAuth = createAsyncThunk("auth/checkAuth", async () => {
   try {
-    const response = await fetch(`${import.meta.env.CELESTIA_API_URL}/api/auth/status`, {
+    const response = await fetch(`${import.meta.env.VITE_CELESTIA_API_URL}/api/auth/status`, {
       credentials: 'include',
     });
     const data = await response.json();
@@ -24,13 +24,13 @@ export const checkAuth = createAsyncThunk("auth/checkAuth", async () => {
 // Thunk to logout
 export const logout = createAsyncThunk("auth/logout", async (_, { rejectWithValue }) => {
     try {
-      const csrfRes = await axios.get(`${import.meta.env.CELESTIA_API_URL}/csrf-token`, {
+      const csrfRes = await axios.get(`${import.meta.env.VITE_CELESTIA_API_URL}/csrf-token`, {
         withCredentials: true,
       });
       const csrfToken = csrfRes.data.token;
 
       await axios.post(
-        `${import.meta.env.CELESTIA_API_URL}/logout`,
+        `${import.meta.env.VITE_CELESTIA_API_URL}/logout`,
         {}, 
         {
           withCredentials: true,
