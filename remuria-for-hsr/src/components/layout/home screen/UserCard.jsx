@@ -49,7 +49,7 @@ function UserCard({uid, showButtons}) {
             let focusedUserFromLS = localUsers.find( u => u.uid === uid )
             console.log("focuseduserfromls: ", focusedUserFromLS)
             if(focusedUserFromLS === undefined){
-                axios.get(`http://localhost:8080/user/dashboard/noRefresh/${uid}`)
+                axios.get(`${import.meta.env.CELESTIA_API_URL}/user/dashboard/noRefresh/${uid}`)
                         .then((res) => {
 
                             let userObjForLocalStorage = {
@@ -83,7 +83,7 @@ function UserCard({uid, showButtons}) {
     }, [localUsers, uid])
 
     useEffect(()=>{
-        axios.get(`http://localhost:8080/user/timeout/${uid}`)
+        axios.get(`${import.meta.env.CELESTIA_API_URL}/user/timeout/${uid}`)
             .then((res) => {
             //console.log(res.data)
             if((res.data < 0)){
@@ -152,11 +152,11 @@ function UserCard({uid, showButtons}) {
         setIsRefreshButtonActive(false);
         setTimeoutValue(-60);
         if(isRefreshPossible){
-            axios.get(`http://localhost:8080/user/dashboard/refresh/${uid}`)
+            axios.get(`${import.meta.env.CELESTIA_API_URL}/user/dashboard/refresh/${uid}`)
                 .then((res) => {
                     if(res.data){
 
-                        axios.get(`http://localhost:8080/user/dashboard/noRefresh/${uid}`)
+                        axios.get(`${import.meta.env.CELESTIA_API_URL}/user/dashboard/noRefresh/${uid}`)
                         .then((res) => {
 
                             let userObjForLocalStorage = {
