@@ -10,7 +10,8 @@ import footIcon from "../../../../assets/relicIcons/IconRelicFoot.png"
 import neckIcon from "../../../../assets/relicIcons/IconRelicNeck.png"
 import goodsIcon from "../../../../assets/relicIcons/IconRelicGoods.png"
 import { useSelector } from "react-redux";
-import { selectLocalization, selectRelicsInfo, selectTextMap, selectItemConfigRelic } from '../../../../store/loadedJSONSlice'; // relegate this to the backend soon
+import { selectLoc } from '../../../../store/localisationSlice';
+import axios from 'axios';
 import iconAttack from "../../../../assets/downloaded_icons/IconAttack.png"
 import iconBreakUp from "../../../../assets/downloaded_icons/IconBreakUp.png"
 import iconCriticalChance from "../../../../assets/downloaded_icons/IconCriticalChance.png"
@@ -32,16 +33,47 @@ import iconSPRatio from "../../../../assets/downloaded_icons/IconSPRatio.png"
 
 function RelicList({ info, relicPageNumber }) {
 
-    const loc = useSelector(selectLocalization);
-    const relics = useSelector(selectRelicsInfo);
-    const textMap = useSelector(selectTextMap); // text map currently only eng, but this will have to be switched by loc, (in the backend ofc)
-    const itemConfigRelic = useSelector(selectItemConfigRelic);
+    const [localisedRelicName, setLocalisedRelicName] = useState([]);
+    const [localisedSetName, setLocalisedSetName] = useState([]);
 
-    function getRelicNameByTid(id){
-        const item = itemConfigRelic.find(r => r.ID == id);
-        const t = item?.ItemName?.Hash;
-        return textMap[t];
-    };
+    const selectedLoc = useSelector(selectLoc);
+
+    useEffect(() => {
+      if (!info || info.length === 0) return;
+
+      const fetchLocalisationInfo = async () => {
+          const promises = info.map((record) => {
+              if (record?.relic) {
+                  return axios.get(`${import.meta.env.VITE_TRANSLATION_API_URL}/hsr/relic-info/${selectedLoc}/${record.relic.tid}`)
+                      .then((res) => {
+                          return {
+                              relicName: res.data.ArtifactName,
+                              setName: res.data.SetName
+                          };
+                      })
+                      .catch((err) => {
+                          console.log("Localisation Endpoint Error: ", err);
+                          return { relicName: "Unknown", setName: "Unknown" }; 
+                      });
+              }
+              return Promise.resolve({ relicName: "", setName: "" });
+          });
+
+          const results = await Promise.all(promises);
+
+          const tempRelicNames = results.map(r => r.relicName);
+          const tempSetNames = results.map(r => r.setName);
+
+          setLocalisedRelicName(tempRelicNames);
+          setLocalisedSetName(tempSetNames);
+      };
+
+      fetchLocalisationInfo();
+
+  }, [selectedLoc, info]);
+
+
+
 
     function imageGetter(relicMetaInfo){
         if(relicMetaInfo){
@@ -124,7 +156,7 @@ function RelicList({ info, relicPageNumber }) {
             if(statType.toLowerCase().includes("ratio") || statType.toLowerCase().includes("chance") ||
              statType.toLowerCase().includes("resistance") || statType.toLowerCase().includes("probability") ||
              statType.toLowerCase().includes("criticaldamage")){
-                console.log(statType)
+                // console.log(statType)
                 return (<div className='text-white afacad-semi-bold text-sm text-center'>+{(statValue*100).toFixed(2)}%</div>);
             } else {
                 return (<div className='text-white afacad-semi-bold text-sm text-center'>+{statValue.toFixed(2)}</div>);
@@ -153,9 +185,9 @@ function RelicList({ info, relicPageNumber }) {
         </thead>
         <tbody>
           {info && info.map((record, index) => {
-            if (record === "lastItem" || record === "error") return null;
+            if (!record || record === "lastItem" || record === "error" || !record.relic) return null;
             const relic = record.relic;
-            const metaArray = metaArrayGetter(relic.tid);
+            const metaArray = relic.tid ? metaArrayGetter(relic.tid) : [];
             return (
               <tr key={index} className={`border-b border-gray-700 ${rarityColourGetter(metaArray)}`}>
                 <td className='px-4 py-1.5'>
@@ -168,10 +200,10 @@ function RelicList({ info, relicPageNumber }) {
                   <img src={relicIconGetter(metaArray)} alt="" className="w-6 h-6 object-contain" />
                 </td>
                 <td className='px-4 py-1.5'>
-                  <div className='afacad-bold text-sm'>{getRelicNameByTid(relic.tid)}</div>
+                  <div className='afacad-bold text-sm'>{ localisedRelicName[index] }</div>
                 </td>
                 <td className='px-4 py-1.5'>
-                  <div className='afacad-bold text-sm'>{loc["en"][relics["Sets"][metaArray[1]]["Name"]]}</div>
+                  <div className='afacad-bold text-sm'>{ localisedSetName[index] }</div>
                 </td>
                 <td className='px-4 py-1.5'>
                   <div className='afacad-semi-bold text-sm'>{relic.level === "null" ? 0 : relic.level}</div>

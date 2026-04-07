@@ -18,7 +18,7 @@ function DashboardsRelics() {
   const uid = useLocation().pathname.split("/")[2];
 
   useEffect(()=>{
-    axios.get(`${import.meta.env.CELESTIA_API_URL}/user/relics/${uid}/${relicPageNumber}`)
+    axios.get(`${import.meta.env.VITE_CELESTIA_API_URL}/user/relics/${uid}/${relicPageNumber}`)
     .then((res)=>{
       console.log("relic response: ", res.data)
       setRelicsInfo([...res.data, "lastItem"])

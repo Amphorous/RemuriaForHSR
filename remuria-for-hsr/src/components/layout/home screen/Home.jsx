@@ -57,7 +57,7 @@ function Home() {
     //console.log("UID form output (Home.jsx) :", uid);
 
     setResponseWait(true);
-    axios.get(`${import.meta.env.CELESTIA_API_URL}/user/dashboard/noRefresh/${uid}`)
+    axios.get(`${import.meta.env.VITE_CELESTIA_API_URL}/user/dashboard/noRefresh/${uid}`)
       .then((res) => {
         setCardInfo(res.data);
 
